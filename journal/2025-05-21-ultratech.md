@@ -72,7 +72,3 @@
 
 ---
 
-## 📝 Will Write About
-
-**Title (tentative):** _"TryHackMe UltraTech: From Ping Injection to Root via Docker"_  
-**Platform:** [Medium](https://medium.com/@yourusername)
