@@ -255,7 +255,7 @@
     Ctrl + A
     Ctrl + C  
     ```
-  - Succedfully obtained a root shell.  
+  - Successfuly obtained a root shell.  
   - Obtained the root_flag from the root directory.
 
 
