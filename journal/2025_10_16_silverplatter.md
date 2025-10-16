@@ -96,7 +96,7 @@ If you'd like to get in touch with us, please reach out to our project manager o
 → Silverpeas is an open-source software for collaboration in a company environment.  
 → Silverpeas was running on port 8080 at "http://10.201.74.112:8080/silverpeas". Visiting the address gave a Login Page.  
 → Upon researching about vulnerabilities in Silverpeas, found an authentication bypass vulnearbility in silverpeas.  
-→ This vulnerability allows unauthenticated access by omitting the "password" field from the Login request to AuthenticationServlet.    
+→ This vulnerability allows unauthenticated access by omitting the "password" field from the Login request to AuthenticationServlet.     
 → Intercepting the login request on Burp.  
   ```html
 POST /silverpeas/AuthenticationServlet HTTP/1.1
@@ -116,7 +116,7 @@ Priority: u=0, i
 
 Login=scr1ptkiddy&Password=pass&DomainId=0
 ```
-→ Modifying the request by completely omitting the Password filed.  
+→ Modifying the request by completely omitting the Password field.  
 
 ```html
 POST /silverpeas/AuthenticationServlet HTTP/1.1
@@ -139,11 +139,12 @@ Login=scr1ptkiddy&DomainId=0
 
 → Forwarding the intercepted request resulted in succesfull login as user "scr1ptkiddy".  
 → Upon exploring the Silverpeas portal, found 2 more users 
-  - Manager
-  - Administrateur
-→ Attempted to login as Administrateur using the same bypass technique but it didn't worked.
-→ Succesfully logged in as "Manager" via the same bypass technique.
-→ The inbox of the user "Manager" on Silverpeas portal had a message
+- Manager
+- Administrateur  
+
+→ Attempted to login as Administrateur using the same bypass technique but it didn't worked.  
+→ Succesfully logged in as "Manager" via the same bypass technique.  
+→ The inbox of the user "Manager" on Silverpeas portal had a message  
 ```bash
 Dude how do you always forget the SSH password? Use a password manager and quit using your silly sticky notes. 
 
@@ -153,9 +154,47 @@ Password: cm0nt!md0ntf0rg3tth!spa$$w0rdagainlol
 ```
 → Found the SSH credentials.  
 
-### SSH Login  
+### 💻 SSH Login  
 
 → Using the found credentials, succesfully logged in via ssh as user "tim".  
+→ Found the first flag in "user.txt" in "/home/tim" directory.  
+
+### 🪜 Privilege Escalation  
+
+→ There were no binaries with SUID bits.  
+→ Using "sudo -l" didn't worked.  
+→ Upon exploring the "/var/log" directory, there was the log file "auth.log.2" in which there was this entry
+  ```html
+tyler : TTY=tty1 ; PWD=/ ; USER=root ; COMMAND=/usr/bin/docker run --name postgresql -d -e POSTGRES_PASSWORD=_Zd_zx7N823/ -v postgresql-data:/var/lib/postgresql/data postgres:12.3
+```
+→ There is an another user named "tyler" and there is the password for POSTGRES.  
+→ Tried running the postgres image but the user "tim" was not permitted to run docker.  
+→ Exploring further in the same directory found a directory named "installer". This directory contained more logs.  
+→ The "autoinstall-user-data" file in the "installer" directory had the below entry  
+```html
+identity:
+    hostname: silver-platter
+    password: $6$uJuA1kpnd4kTFniw$/402iWwKzcYD8AMHG6bY/PXwZWOkrrVmtoO7qQpfvVLh1CHmiKUodwMGP7/awDYtrzpDHV8cNbpS1HJ6VMakN.
+    realname: root
+    username: tyler
+```  
+→ This revealed the password hash for user tyler and it also worth noting that tyler is also root.  
+→ The password hash was SHA512 and was salted which rendered cracking the hash not feasible.  
+→ Reusing the previously found Postgres password for user tyler gave access as user tyler.  
+→ Since the user "tyler" is also root, therefore succesfully obtained the root flag from "/root/root.txt".  
+
+
+## 🔍 Key Findings  
+
+→ Authentication Bypass vulnerability in Silverpeas proved useful in gaining intital access.  
+→ Lack of unique password resulted in privilege escalation to root. 
+
+## 📚 What I Learned ?
+→ Bruteforce should be the last resort, it is always recommended to enumerate more and more.  
+→ Reusing passwords can be the worst mistake made by system admins.  
+
+
+
 
 
 
