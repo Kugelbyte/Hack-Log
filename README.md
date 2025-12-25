@@ -4,5 +4,5 @@
 
 **📝[Writeups](./journal)**  
 **📝[Sample Penetration Reports](./reports)**
-**📝[CVE-2025-55182 (React2Shell Analysis)](https://github.com/Kugelbyte/React2Shell-Analysis)
+**📝[CVE-2025-55182 (React2Shell Analysis)](https://github.com/Kugelbyte/React2Shell-Analysis)**
 
